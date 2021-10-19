@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FeeSheetRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class FeeSheet
      * @ORM\ManyToOne(targetEntity=State::class, inversedBy="FeeSheets")
      */
     private $state;
+
+    /**
+     * @ORM\OneToMany(targetEntity=StandardFeesLine::class, mappedBy="feeSheets")
+     */
+    private $standardFeesLines;
+
+    public function __construct()
+    {
+        $this->standardFeesLines = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +115,36 @@ class FeeSheet
     public function setState(?State $state): self
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|StandardFeesLine[]
+     */
+    public function getStandardFeesLines(): Collection
+    {
+        return $this->standardFeesLines;
+    }
+
+    public function addStandardFeesLine(StandardFeesLine $standardFeesLine): self
+    {
+        if (!$this->standardFeesLines->contains($standardFeesLine)) {
+            $this->standardFeesLines[] = $standardFeesLine;
+            $standardFeesLine->setFeeSheets($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStandardFeesLine(StandardFeesLine $standardFeesLine): self
+    {
+        if ($this->standardFeesLines->removeElement($standardFeesLine)) {
+            // set the owning side to null (unless already changed)
+            if ($standardFeesLine->getFeeSheets() === $this) {
+                $standardFeesLine->setFeeSheets(null);
+            }
+        }
 
         return $this;
     }
