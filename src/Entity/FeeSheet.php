@@ -45,18 +45,12 @@ class FeeSheet
     private $state;
 
     /**
-     * @ORM\OneToMany(targetEntity=StandardFeesLine::class, mappedBy="feeSheets")
-     */
-    private $standardFeesLines;
-
-    /**
      * @ORM\OneToMany(targetEntity=VariableFeesLine::class, mappedBy="feeSheet")
      */
     private $variableFeesLines;
 
     public function __construct()
     {
-        $this->standardFeesLines = new ArrayCollection();
         $this->variableFeesLines = new ArrayCollection();
     }
 
@@ -121,36 +115,6 @@ class FeeSheet
     public function setState(?State $state): self
     {
         $this->state = $state;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|StandardFeesLine[]
-     */
-    public function getStandardFeesLines(): Collection
-    {
-        return $this->standardFeesLines;
-    }
-
-    public function addStandardFeesLine(StandardFeesLine $standardFeesLine): self
-    {
-        if (!$this->standardFeesLines->contains($standardFeesLine)) {
-            $this->standardFeesLines[] = $standardFeesLine;
-            $standardFeesLine->setFeeSheets($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStandardFeesLine(StandardFeesLine $standardFeesLine): self
-    {
-        if ($this->standardFeesLines->removeElement($standardFeesLine)) {
-            // set the owning side to null (unless already changed)
-            if ($standardFeesLine->getFeeSheets() === $this) {
-                $standardFeesLine->setFeeSheets(null);
-            }
-        }
 
         return $this;
     }

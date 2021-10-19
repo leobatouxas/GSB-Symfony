@@ -23,11 +23,6 @@ class StandardFeesLine
     private $quantity;
 
     /**
-     * @ORM\ManyToOne(targetEntity=FeeSheet::class, inversedBy="standardFeesLines")
-     */
-    private $feeSheets;
-
-    /**
      * @ORM\ManyToOne(targetEntity=StandardFees::class, inversedBy="standardFeesLines")
      */
     private $standardFees;
@@ -45,18 +40,6 @@ class StandardFeesLine
     public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    public function getFeeSheets(): ?FeeSheet
-    {
-        return $this->feeSheets;
-    }
-
-    public function setFeeSheets(?FeeSheet $feeSheets): self
-    {
-        $this->feeSheets = $feeSheets;
 
         return $this;
     }
