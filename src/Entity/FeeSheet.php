@@ -49,9 +49,15 @@ class FeeSheet
      */
     private $variableFeesLines;
 
+    /**
+     * @ORM\OneToMany(targetEntity=StandardFeesLine::class, mappedBy="feeSheet")
+     */
+    private $standardFeesLines;
+
     public function __construct()
     {
         $this->variableFeesLines = new ArrayCollection();
+        $this->standardFeesLines = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,6 +149,36 @@ class FeeSheet
             // set the owning side to null (unless already changed)
             if ($variableFeesLine->getFeeSheet() === $this) {
                 $variableFeesLine->setFeeSheet(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|StandardFeesLine[]
+     */
+    public function getStandardFeesLines(): Collection
+    {
+        return $this->standardFeesLines;
+    }
+
+    public function addStandardFeesLine(StandardFeesLine $standardFeesLine): self
+    {
+        if (!$this->standardFeesLines->contains($standardFeesLine)) {
+            $this->standardFeesLines[] = $standardFeesLine;
+            $standardFeesLine->setFeeSheet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStandardFeesLine(StandardFeesLine $standardFeesLine): self
+    {
+        if ($this->standardFeesLines->removeElement($standardFeesLine)) {
+            // set the owning side to null (unless already changed)
+            if ($standardFeesLine->getFeeSheet() === $this) {
+                $standardFeesLine->setFeeSheet(null);
             }
         }
 
