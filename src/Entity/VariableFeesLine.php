@@ -32,6 +32,11 @@ class VariableFeesLine
      */
     private $amount;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=FeeSheet::class, inversedBy="variableFeesLines")
+     */
+    private $feeSheet;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +74,18 @@ class VariableFeesLine
     public function setAmount(int $amount): self
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getFeeSheet(): ?FeeSheet
+    {
+        return $this->feeSheet;
+    }
+
+    public function setFeeSheet(?FeeSheet $feeSheet): self
+    {
+        $this->feeSheet = $feeSheet;
 
         return $this;
     }
