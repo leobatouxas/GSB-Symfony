@@ -32,6 +32,11 @@ class FeeSheet
      */
     private $validAmount;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="feeSheets")
+     */
+    private $employees;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +74,18 @@ class FeeSheet
     public function setValidAmount(int $validAmount): self
     {
         $this->validAmount = $validAmount;
+
+        return $this;
+    }
+
+    public function getEmployees(): ?Employee
+    {
+        return $this->employees;
+    }
+
+    public function setEmployees(?Employee $employees): self
+    {
+        $this->employees = $employees;
 
         return $this;
     }

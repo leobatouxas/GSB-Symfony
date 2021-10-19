@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EmployeeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -59,6 +61,16 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\ManyToOne(targetEntity=EmployeeType::class, inversedBy="employees")
      */
     private $employeeType;
+
+    /**
+     * @ORM\OneToMany(targetEntity=FeeSheet::class, mappedBy="employees")
+     */
+    private $feeSheets;
+
+    public function __construct()
+    {
+        $this->feeSheets = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -200,6 +212,36 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmployeeType(?EmployeeType $employeeType): self
     {
         $this->employeeType = $employeeType;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FeeSheet[]
+     */
+    public function getFeeSheets(): Collection
+    {
+        return $this->feeSheets;
+    }
+
+    public function addFeeSheet(FeeSheet $feeSheet): self
+    {
+        if (!$this->feeSheets->contains($feeSheet)) {
+            $this->feeSheets[] = $feeSheet;
+            $feeSheet->setEmployees($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeeSheet(FeeSheet $feeSheet): self
+    {
+        if ($this->feeSheets->removeElement($feeSheet)) {
+            // set the owning side to null (unless already changed)
+            if ($feeSheet->getEmployees() === $this) {
+                $feeSheet->setEmployees(null);
+            }
+        }
 
         return $this;
     }
