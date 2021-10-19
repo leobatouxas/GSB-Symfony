@@ -37,6 +37,11 @@ class FeeSheet
      */
     private $employees;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=State::class, inversedBy="FeeSheets")
+     */
+    private $state;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +91,18 @@ class FeeSheet
     public function setEmployees(?Employee $employees): self
     {
         $this->employees = $employees;
+
+        return $this;
+    }
+
+    public function getState(): ?State
+    {
+        return $this->state;
+    }
+
+    public function setState(?State $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }
