@@ -55,6 +55,11 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $postalcode;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=EmployeeType::class, inversedBy="employees")
+     */
+    private $employeeType;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -183,6 +188,18 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPostalcode(string $postalcode): self
     {
         $this->postalcode = $postalcode;
+
+        return $this;
+    }
+
+    public function getEmployeeType(): ?EmployeeType
+    {
+        return $this->employeeType;
+    }
+
+    public function setEmployeeType(?EmployeeType $employeeType): self
+    {
+        $this->employeeType = $employeeType;
 
         return $this;
     }
