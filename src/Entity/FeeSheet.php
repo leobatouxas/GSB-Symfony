@@ -35,11 +35,6 @@ class FeeSheet
     private $validAmount;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="feeSheets")
-     */
-    private $employees;
-
-    /**
      * @ORM\ManyToOne(targetEntity=State::class, inversedBy="FeeSheets")
      */
     private $state;
@@ -53,6 +48,11 @@ class FeeSheet
      * @ORM\OneToMany(targetEntity=StandardFeesLine::class, mappedBy="feeSheet")
      */
     private $standardFeesLines;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="FeeSheets")
+     */
+    private $employee;
 
     public function __construct()
     {
@@ -97,18 +97,6 @@ class FeeSheet
     public function setValidAmount(int $validAmount): self
     {
         $this->validAmount = $validAmount;
-
-        return $this;
-    }
-
-    public function getEmployees(): ?Employee
-    {
-        return $this->employees;
-    }
-
-    public function setEmployees(?Employee $employees): self
-    {
-        $this->employees = $employees;
 
         return $this;
     }
@@ -181,6 +169,18 @@ class FeeSheet
                 $standardFeesLine->setFeeSheet(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmployee(): ?Employee
+    {
+        return $this->employee;
+    }
+
+    public function setEmployee(?Employee $employee): self
+    {
+        $this->employee = $employee;
 
         return $this;
     }

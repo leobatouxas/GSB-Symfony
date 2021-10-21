@@ -63,13 +63,13 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     private $employeeType;
 
     /**
-     * @ORM\OneToMany(targetEntity=FeeSheet::class, mappedBy="employees")
+     * @ORM\OneToMany(targetEntity=FeeSheet::class, mappedBy="employee")
      */
-    private $feeSheets;
+    private $FeeSheets;
 
     public function __construct()
     {
-        $this->feeSheets = new ArrayCollection();
+        $this->FeeSheets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -221,14 +221,14 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getFeeSheets(): Collection
     {
-        return $this->feeSheets;
+        return $this->FeeSheets;
     }
 
     public function addFeeSheet(FeeSheet $feeSheet): self
     {
-        if (!$this->feeSheets->contains($feeSheet)) {
-            $this->feeSheets[] = $feeSheet;
-            $feeSheet->setEmployees($this);
+        if (!$this->FeeSheets->contains($feeSheet)) {
+            $this->FeeSheets[] = $feeSheet;
+            $feeSheet->setEmployee($this);
         }
 
         return $this;
@@ -236,10 +236,10 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeFeeSheet(FeeSheet $feeSheet): self
     {
-        if ($this->feeSheets->removeElement($feeSheet)) {
+        if ($this->FeeSheets->removeElement($feeSheet)) {
             // set the owning side to null (unless already changed)
-            if ($feeSheet->getEmployees() === $this) {
-                $feeSheet->setEmployees(null);
+            if ($feeSheet->getEmployee() === $this) {
+                $feeSheet->setEmployee(null);
             }
         }
 
