@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FeesheetController!{% endblock %}
+
+{% block body %}
+    <h1>Fiche frais {{ feesheet.date|date("M") ~ ' '  ~ feesheet.date|date("Y") }}</h1>
+
+    {% for standardFeesLine in standardFeesLines %}
+        {{ standardFeesLine.quantity }}
+        {{ standardFeesLine.StandardFees.name }}
+    {% endfor %}
+{% endblock %}

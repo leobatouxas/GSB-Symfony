@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FeesheetController!{% endblock %}
+
+{% block body %}
+{{ form_start(form) }}
+	{{ form_widget(form) }} <!-- représente les champs créer dans le controller -->
+	<input type="submit" value="Create FeeSheet">
+{{ form_end(form) }}
+{% endblock %}
