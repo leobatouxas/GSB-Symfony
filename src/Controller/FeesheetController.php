@@ -6,6 +6,7 @@ use App\Entity\Employee;
 use App\Entity\FeeSheet;
 use App\Entity\StandardFeesLine;
 use App\Entity\State;
+use App\Repository\FeeSheetRepository;
 use App\Repository\StandardFeesLineRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -21,11 +22,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class FeesheetController extends AbstractController
 {
     #[Route('/feesheet', name: 'app_feesheet')]
-    public function index(): Response
+    public function index(FeeSheetRepository $feeSheetRepository): Response
     {
-        return $this->render('feesheet/index.html.twig', [
-            'controller_name' => 'FeesheetController',
-        ]);
+        $feesheets = $feeSheetRepository->findBy(['employee' => $this->getUser()]);
+        return $this->render('feesheet/index.html.twig', compact('feesheets'));
     }
 
     #[Route('/feesheet/create', priority: 10 , name: 'app_feesheet_create')]
