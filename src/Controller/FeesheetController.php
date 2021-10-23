@@ -8,6 +8,7 @@ use App\Entity\StandardFeesLine;
 use App\Entity\State;
 use App\Repository\FeeSheetRepository;
 use App\Repository\StandardFeesLineRepository;
+use App\Repository\StateRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,13 +20,47 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use function PHPUnit\Framework\isNull;
+
 class FeesheetController extends AbstractController
 {
     #[Route('/feesheet', name: 'app_feesheet')]
-    public function index(FeeSheetRepository $feeSheetRepository): Response
+    public function index(FeeSheetRepository $feeSheetRepository, Request $request, EntityManagerInterface $em, StateRepository $stateRepository): Response
     {
+        
+        //récupération de toutes les fiches frais
         $feesheets = $feeSheetRepository->findBy(['employee' => $this->getUser()]);
-        return $this->render('feesheet/index.html.twig', compact('feesheets'));
+
+        $feesheet = new FeeSheet;
+        $form = $this->createFormBuilder($feesheet)
+                    ->add('date',DateType::class, ['days' => range(1,1)])
+                    ->getForm()
+        ;
+
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid())
+        {
+            // Verification si 
+            if($feeSheetRepository->findOneBy(['date' => $form->getData()->getDate(),'employee' => $this->getUser()]) == null)
+            {
+                $feesheet->setNbDocuments(0);
+                $feesheet->setValidAmount(0);
+                $state = $stateRepository->findOneBy(['id' => 1]);
+                $feesheet->setState($state); 
+                $feesheet->setEmployee($this->getUser());
+                $em->persist($feesheet);
+                $em->flush();
+                return $this->redirectToRoute('app_home');
+                
+            }
+            else {
+                return $this->redirectToRoute('app_feesheet');
+            }
+            
+        }
+
+        return $this->render('feesheet/index.html.twig', ['feesheets' => $feesheets, 'form' => $form->createView()]);
     }
 
     #[Route('/feesheet/create', priority: 10 , name: 'app_feesheet_create')]
