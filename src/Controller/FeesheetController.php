@@ -8,6 +8,7 @@ use App\Entity\StandardFeesLine;
 use App\Entity\State;
 use App\Repository\FeeSheetRepository;
 use App\Repository\StandardFeesLineRepository;
+use App\Repository\StandardFeesRepository;
 use App\Repository\StateRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -25,7 +26,7 @@ use function PHPUnit\Framework\isNull;
 class FeesheetController extends AbstractController
 {
     #[Route('/feesheet', name: 'app_feesheet')]
-    public function index(FeeSheetRepository $feeSheetRepository, Request $request, EntityManagerInterface $em, StateRepository $stateRepository): Response
+    public function index(FeeSheetRepository $feeSheetRepository, Request $request, EntityManagerInterface $em, StateRepository $stateRepository, StandardFeesRepository $StandardFeesRepository): Response
     {
         
         //récupération de toutes les fiches frais
@@ -38,6 +39,7 @@ class FeesheetController extends AbstractController
         ;
 
         $form->handleRequest($request);
+       
         
         if($form->isSubmitted() && $form->isValid())
         {
@@ -51,7 +53,19 @@ class FeesheetController extends AbstractController
                 $feesheet->setEmployee($this->getUser());
                 $em->persist($feesheet);
                 $em->flush();
-                return $this->redirectToRoute('app_home');
+                $AllstandardFees = $StandardFeesRepository->findAll();
+
+                for($i = 0;$i<count($AllstandardFees);$i++)
+                {
+                    $standardfeesline = new standardfeesline();
+                    $standardfeesline->setFeeSheet($feesheet);
+                    $standardfeesline->setStandardFees($AllstandardFees[$i]);
+                    $standardfeesline->setQuantity(0);
+                    $em->persist($standardfeesline);
+                    $em->flush();
+                }
+                
+                return $this->redirectToRoute('app_feesheet_show',['id' => $feesheet->getId()]);
                 
             }
             else {
