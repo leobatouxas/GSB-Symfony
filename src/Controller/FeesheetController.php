@@ -95,7 +95,6 @@ class FeesheetController extends AbstractController
                 {
                     $standardFeesLine = $standardFeesLineRepository->findOneBy(['id'=> $request->request->get('idStandardFeesLine')]);
                     $standardFeesLine->setQuantity($request->request->get('quantity'));
-                    dd($standardFeesLine);
                     $em->persist($standardFeesLine);
 				    $em->flush();
                 }   
