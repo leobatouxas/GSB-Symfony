@@ -64,9 +64,29 @@ class FeesheetController extends AbstractController
     }
 
     #[Route('/feesheet/{id<[0-9]+>}', name: 'app_feesheet_show')]
-    public function show(FeeSheet $feesheet, StandardFeesLineRepository $standardFeesLineRepository): Response
+    public function show(FeeSheet $feesheet, StandardFeesLineRepository $standardFeesLineRepository, Request $request, EntityManagerInterface $em): Response
     {
         $standardFeesLines = $standardFeesLineRepository->findBy(['feeSheet' => $feesheet]);
+
+        if($request->isMethod('POST')) {
+                $verif = 0;
+                for($i=0;$i<count($standardFeesLines);$i++)
+                {
+                    if($standardFeesLines[$i]->getId() == $request->request->get('idStandardFeesLine'))
+                    {
+                        $verif = 1;
+                    }
+                }
+                if($verif == 1)
+                {
+                    $standardFeesLine = $standardFeesLineRepository->findOneBy(['id'=> $request->request->get('idStandardFeesLine')]);
+                    $standardFeesLine->setQuantity($request->request->get('quantity'));
+                    dd($standardFeesLine);
+                    $em->persist($standardFeesLine);
+				    $em->flush();
+                }   
+            
+        }
         return $this->render('feesheet/show.html.twig',compact('feesheet','standardFeesLines'));
     }
 }

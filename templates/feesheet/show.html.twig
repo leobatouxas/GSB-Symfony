@@ -20,13 +20,17 @@
   </thead>
   <tbody>
     {% for standardFeesLine in standardFeesLines %}
+        <form method="post">
+        <input type="hidden" name="idStandardFeesLine" value="{{ standardFeesLine.id }}">
         <tr>
-        <td>{{standardFeesLine.StandardFees.name}}</td>
-        <td>{{standardFeesLine.quantity}}</td>
-        <td>{{standardFeesLine.StandardFees.UnitAmount}}</td>
-        <td>{{ standardFeesLine.quantity * standardFeesLine.StandardFees.UnitAmount}}</td>
-        <td><a href="">Modifier</a></td>
+            <td>{{standardFeesLine.StandardFees.name}}</td>
+            <td><input type="number" name="quantity" id="" value="{{standardFeesLine.quantity}}"></td>
+            <td>{{standardFeesLine.StandardFees.UnitAmount}}</td>
+            <td>{{ standardFeesLine.quantity * standardFeesLine.StandardFees.UnitAmount}}</td>
+            <td><button class="btn btn-primary" type="submit">Modifier</button></td>
         </tr>
+        </form>
+        
     {% endfor %}
   </tbody>
 </table>
