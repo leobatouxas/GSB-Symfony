@@ -63,45 +63,6 @@ class FeesheetController extends AbstractController
         return $this->render('feesheet/index.html.twig', ['feesheets' => $feesheets, 'form' => $form->createView()]);
     }
 
-    #[Route('/feesheet/create', priority: 10 , name: 'app_feesheet_create')]
-    public function create(Request $request, EntityManagerInterface $em): Response
-    {
-        $feesheet = new FeeSheet;
-        $form = $this->createFormBuilder($feesheet)
-                    ->add('date', DateType::class)
-                    ->add('nbDocuments',TextType::class)
-                    ->add('validAmount', NumberType::class)
-                    ->add('State', EntityType::class, [
-                        'class' => State::class,
-                        'choice_label' => function ($category) {
-                            return $category->getName();
-                        }
-                    ])
-                    ->add('Employee', EntityType::class, [
-                        'class' => Employee::class,
-                        'choice_label' => function ($category) {
-                            return $category->getFirstname() . ' ' . $category->getLastName();
-                        }
-                    ])
-                    ->getForm()
-        ;
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid())
-        {
-            $em->persist($feesheet);
-            $em->flush();
-            return $this->redirectToRoute('app_home');
-        }
-
-
-        return $this->render('feesheet/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-
     #[Route('/feesheet/{id<[0-9]+>}', name: 'app_feesheet_show')]
     public function show(FeeSheet $feesheet, StandardFeesLineRepository $standardFeesLineRepository): Response
     {
