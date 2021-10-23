@@ -3,10 +3,33 @@
 {% block title %}Hello FeesheetController!{% endblock %}
 
 {% block body %}
+<div class="text-center">
     <h1>Fiche frais {{ feesheet.date|date("M") ~ ' '  ~ feesheet.date|date("Y") }}</h1>
-
+</div>
+<div>
+<h2>Frais Forfaitaire</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Frais Forfaitaire</th>
+      <th scope="col">Quantité</th>
+      <th scope="col">Montant unitaire</th>
+      <th scope="col">Total</th>
+      <th scope="col">Modifier</th>
+    </tr>
+  </thead>
+  <tbody>
     {% for standardFeesLine in standardFeesLines %}
-        {{ standardFeesLine.quantity }}
-        {{ standardFeesLine.StandardFees.name }}
+        <tr>
+        <td>{{standardFeesLine.StandardFees.name}}</td>
+        <td>{{standardFeesLine.quantity}}</td>
+        <td>{{standardFeesLine.StandardFees.UnitAmount}}</td>
+        <td>{{ standardFeesLine.quantity * standardFeesLine.StandardFees.UnitAmount}}</td>
+        <td><a href="">Modifier</a></td>
+        </tr>
     {% endfor %}
+  </tbody>
+</table>
+    
+</div>
 {% endblock %}
