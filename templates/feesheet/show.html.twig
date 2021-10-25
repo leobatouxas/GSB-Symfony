@@ -6,6 +6,12 @@
 <div class="text-center">
     <h1>Fiche frais {{ feesheet.date|date("M") ~ ' '  ~ feesheet.date|date("Y") }}</h1>
 </div>
+{{ form_start(form) }}
+<button type="submit" class="btn btn-primary">Actualiser</button>
+
+
+
+
 <div>
 <h2>Frais Forfaitaire</h2>
 <table class="table">
@@ -15,25 +21,45 @@
       <th scope="col">Quantité</th>
       <th scope="col">Montant unitaire</th>
       <th scope="col">Total</th>
-      <th scope="col">Modifier</th>
     </tr>
   </thead>
   <tbody>
-    {% for standardFeesLine in standardFeesLines %}
-        <form method="post">
-        <input type="hidden" name="idStandardFeesLine" value="{{ standardFeesLine.id }}">
-        <tr>
-            <td>{{standardFeesLine.StandardFees.name}}</td>
-            <td><input type="number" name="quantity" id="" value="{{standardFeesLine.quantity}}"></td>
-            <td>{{standardFeesLine.StandardFees.UnitAmount}}</td>
-            <td>{{ standardFeesLine.quantity * standardFeesLine.StandardFees.UnitAmount}}</td>
-            <td><button class="btn btn-primary" type="submit">Modifier</button></td>
-        </tr>
-        </form>
-        
+  
+    {% for standardfeesline in form.standardfeeslines %}
+    <tr>
+        <td>{{ standardfeesline.standardFees.name.vars.value }}</td>
+        <td>{{ form_row(standardfeesline.quantity) }}</td>
+        <td>{{ standardfeesline.standardFees.unitAmount.vars.value }}</td>
+        <td>{{ standardfeesline.quantity.vars.value * standardfeesline.standardFees.unitAmount.vars.value }}</td>
+    </tr>
+        {{ form_row(standardfeesline.standardFees) }}
     {% endfor %}
   </tbody>
 </table>
+
+
+<h2>Autres Frais</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Libellé</th>
+      <th scope="col">Montant </th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for variablefeesline in form.variablefeeslines %}
+    <tr>
+        <td>{{ form_row(variablefeesline.date) }}</td>
+        <td>{{ form_row(variablefeesline.name) }}</td>
+        <td>{{ form_row(variablefeesline.amount) }}</td>
+        <td><a href="" class="btn btn-primary">Supprimer</a></td>
+    </tr>
+    {% endfor %}
     
+  </tbody>
+</table>
+    {{ form_end(form) }}
 </div>
 {% endblock %}

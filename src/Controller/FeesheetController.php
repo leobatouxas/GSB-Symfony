@@ -6,14 +6,19 @@ use App\Entity\Employee;
 use App\Entity\FeeSheet;
 use App\Entity\StandardFeesLine;
 use App\Entity\State;
+use App\Entity\VariableFeesLine;
+use App\Form\FeesheetType;
+use App\Form\VariableFeesLineType;
 use App\Repository\FeeSheetRepository;
 use App\Repository\StandardFeesLineRepository;
 use App\Repository\StandardFeesRepository;
 use App\Repository\StateRepository;
+use App\Repository\VariableFeesLineRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -43,6 +48,7 @@ class FeesheetController extends AbstractController
         
         if($form->isSubmitted() && $form->isValid())
         {
+            dd($form);
             // Verification si 
             if($feeSheetRepository->findOneBy(['date' => $form->getData()->getDate(),'employee' => $this->getUser()]) == null)
             {
@@ -77,12 +83,14 @@ class FeesheetController extends AbstractController
         return $this->render('feesheet/index.html.twig', ['feesheets' => $feesheets, 'form' => $form->createView()]);
     }
 
-    #[Route('/feesheet/{id<[0-9]+>}', name: 'app_feesheet_show')]
-    public function show(FeeSheet $feesheet, StandardFeesLineRepository $standardFeesLineRepository, Request $request, EntityManagerInterface $em): Response
+    #[Route('/feesheet/{id<[0-9]+>/show}', name: 'app_feesheet_showe')]
+    public function showe(FeeSheet $feesheet, StandardFeesLineRepository $standardFeesLineRepository, VariableFeesLineRepository $variableFeesLineRepository, Request $request, EntityManagerInterface $em): Response
     {
+        //StandardFeesLine
         $standardFeesLines = $standardFeesLineRepository->findBy(['feeSheet' => $feesheet]);
 
-        if($request->isMethod('POST')) {
+        //update
+        if($request->isMethod('POST') && isset($_POST['idStandardFeesLine']) == true) {
                 $verif = 0;
                 for($i=0;$i<count($standardFeesLines);$i++)
                 {
@@ -97,9 +105,57 @@ class FeesheetController extends AbstractController
                     $standardFeesLine->setQuantity($request->request->get('quantity'));
                     $em->persist($standardFeesLine);
 				    $em->flush();
-                }   
-            
+                }    
         }
-        return $this->render('feesheet/show.html.twig',compact('feesheet','standardFeesLines'));
+
+        //variablesFeesLines
+        $variableFeesLines = $variableFeesLineRepository->findBy(['feeSheet' => $feesheet]);
+
+        //create
+        $VariableFeesLine = new VariableFeesLine;
+        $form = $this->createFormBuilder($VariableFeesLine)
+								 ->add('date', DateType::class)
+								 ->add('name', TextType::class)
+								 ->add('amount', NumberType::class)
+								 ->getForm()
+		;
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $VariableFeesLine->setFeeSheet($feesheet);
+            $em->persist($VariableFeesLine);
+            $em->flush();
+        }
+
+        //update
+        
+
+        return $this->render('feesheet/showe.html.twig',[
+            'feesheet' => $feesheet,
+            'standardFeesLines' => $standardFeesLines,
+            'variableFeesLines' => $variableFeesLines,
+            'form' => $form->createView()
+        ]);
+    }
+
+
+
+    #[Route('/feesheet/{id<[0-9]+>}', name: 'app_feesheet_show')]
+    public function show(FeeSheet $feesheet, Request $request, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(FeesheetType::class, $feesheet, ['label'=> false]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($feesheet);
+            $em->flush();
+        }
+
+        return $this->render('feesheet/show.html.twig', [
+            'form' => $form->createView(),
+            'feesheet' => $feesheet
+        ]);
     }
 }
