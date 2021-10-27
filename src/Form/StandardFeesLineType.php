@@ -17,8 +17,9 @@ class StandardFeesLineType extends AbstractType
     {
         $builder
             ->add('standardFees', StandardFeesType::class,['attr' => ['readonly' => true,'disabled' => true, 'hidden' => true],'label'=> false])
-            ->add('quantity', NumberType::class, ['label' => false])   
-        ;
+            ->add('quantity', NumberType::class, [
+                'label' => false
+                ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

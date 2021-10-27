@@ -16,10 +16,7 @@ class FeesheetType extends AbstractType
             ->add('standardfeeslines', CollectionType::class, [
             'entry_type' => StandardFeesLineType::class,
             'by_reference' => false,
-            'allow_add' => true,
-            'allow_delete' => true,
-            'error_bubbling' => false,
-            'label' => false
+            'label' => false,
             ])
             ->add('variablefeeslines', CollectionType::class, [
                 'entry_type' => VariableFeesLineType::class,
@@ -27,7 +24,7 @@ class FeesheetType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'error_bubbling' => false,
-                'label' => false
+                'label' => false,
             ])
         ;
     }
