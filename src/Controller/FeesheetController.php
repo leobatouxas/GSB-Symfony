@@ -48,7 +48,6 @@ class FeesheetController extends AbstractController
         
         if($form->isSubmitted() && $form->isValid())
         {
-            dd($form);
             // Verification si 
             if($feeSheetRepository->findOneBy(['date' => $form->getData()->getDate(),'employee' => $this->getUser()]) == null)
             {
@@ -96,9 +95,11 @@ class FeesheetController extends AbstractController
             foreach($feesheet->getVariableFeesLines() as $variablefeeslines){
                 $variablefeeslines->setFeesheet($feesheet);
                 $em->persist($variablefeeslines);
-            }    
-            $em->persist($feesheet);
-            $em->flush();
+                $em->remove($variablefeeslines);
+            }   
+                $em->persist($feesheet);
+                $em->flush();
+            return $this->redirectToRoute('app_feesheet_show', ['id' => $feesheet->getId()]);
         }
 
         return $this->render('feesheet/show.html.twig', [

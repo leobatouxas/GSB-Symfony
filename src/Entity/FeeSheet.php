@@ -40,7 +40,7 @@ class FeeSheet
     private $state;
 
     /**
-     * @ORM\OneToMany(targetEntity=VariableFeesLine::class, mappedBy="feeSheet")
+     * @ORM\OneToMany(targetEntity=VariableFeesLine::class, mappedBy="feeSheet", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $variableFeesLines;
 
