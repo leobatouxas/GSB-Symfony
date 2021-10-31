@@ -3,9 +3,8 @@
 namespace App\Form;
 
 use App\Entity\VariableFeesLine;
-use Doctrine\DBAL\Types\DateType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType as TypeDateType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +15,7 @@ class VariableFeesLineType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date',TypeDateType::class,['label' => false])
+            ->add('date',DateType::class,['label' => false, 'years' => range(Date('Y'), date('Y')), 'months' => range(Date('m'), date('m') + 1)])
             ->add('name',TextType::class,['label' => false])
             ->add('amount',NumberType::class,['label' => false])
         ;
