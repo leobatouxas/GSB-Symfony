@@ -33,13 +33,12 @@ class FeesheetController extends AbstractController
     #[Route('/feesheet', name: 'app_feesheet')]
     public function index(FeeSheetRepository $feeSheetRepository, Request $request, EntityManagerInterface $em, StateRepository $stateRepository, StandardFeesRepository $StandardFeesRepository): Response
     {
-        
         //récupération de toutes les fiches frais
         $feesheets = $feeSheetRepository->findBy(['employee' => $this->getUser()]);
 
         $feesheet = new FeeSheet;
         $form = $this->createFormBuilder($feesheet)
-                    ->add('date',DateType::class, ['days' => range(1,1)])
+                    ->add('date',DateType::class, ['days' => range(1,1), 'years' => range(Date('Y'), date('Y')), 'months' => range(Date('m'), date('m') + 1)])
                     ->getForm()
         ;
 
@@ -47,8 +46,8 @@ class FeesheetController extends AbstractController
        
         
         if($form->isSubmitted() && $form->isValid())
-        {
-            // Verification si 
+        {        
+            // Verification si il existe déjà une fiche frais avec cette utilisateur et la même date
             if($feeSheetRepository->findOneBy(['date' => $form->getData()->getDate(),'employee' => $this->getUser()]) == null)
             {
                 $feesheet->setNbDocuments(0);
@@ -69,7 +68,18 @@ class FeesheetController extends AbstractController
                     $em->persist($standardfeesline);
                     $em->flush();
                 }
+
+
+                $feesheetPrevMonth = $feeSheetRepository->findOneBy(['date' => $form->getData()->getDate()->modify('-1 month'), 'employee' => $this->getUser()]);
                 
+                if($feesheetPrevMonth->getState()->getId() === 1)
+                {
+                    $state2 = $stateRepository->findOneBy(['id' => 2]);
+                    $feesheetPrevMonth->setState($state2);
+                    $em->persist($feesheetPrevMonth);
+                    $em->flush();
+                }
+
                 return $this->redirectToRoute('app_feesheet_show',['id' => $feesheet->getId()]);
                 
             }
