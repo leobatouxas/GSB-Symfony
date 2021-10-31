@@ -13,6 +13,7 @@ class FeesheetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('nbDocuments')
             ->add('standardfeeslines', CollectionType::class, [
             'entry_type' => StandardFeesLineType::class,
             'by_reference' => false,
