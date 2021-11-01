@@ -38,7 +38,7 @@ class FeesheetController extends AbstractController
 
         $feesheet = new FeeSheet;
         $form = $this->createFormBuilder($feesheet)
-                    ->add('date',DateType::class, ['days' => range(1,1), 'years' => range(Date('Y'), date('Y')), 'months' => range(Date('m'), date('m') + 1)])
+                    ->add('date',DateType::class, ['days' => range(1,1), 'years' => range(Date('Y'), date('Y')), 'months' => range(Date('m') - 1, date('m'))])
                     ->getForm()
         ;
 
@@ -71,14 +71,18 @@ class FeesheetController extends AbstractController
 
 
                 $feesheetPrevMonth = $feeSheetRepository->findOneBy(['date' => $form->getData()->getDate()->modify('-1 month'), 'employee' => $this->getUser()]);
-                
-                if($feesheetPrevMonth->getState()->getId() === 1)
+
+                if($feesheetPrevMonth != null)
                 {
-                    $state2 = $stateRepository->findOneBy(['id' => 2]);
-                    $feesheetPrevMonth->setState($state2);
-                    $em->persist($feesheetPrevMonth);
-                    $em->flush();
+                    if($feesheetPrevMonth->getState()->getId() === 1)
+                    {
+                        $state2 = $stateRepository->findOneBy(['id' => 2]);
+                        $feesheetPrevMonth->setState($state2);
+                        $em->persist($feesheetPrevMonth);
+                        $em->flush();
+                    }
                 }
+                
 
                 return $this->redirectToRoute('app_feesheet_show',['id' => $feesheet->getId()]);
                 
