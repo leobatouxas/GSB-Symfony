@@ -104,8 +104,7 @@ class FeesheetController extends AbstractController
             ]);
 
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $feesheet->getState()->getId() === 1) {
             foreach($feesheet->getVariableFeesLines() as $variablefeeslines){
                 $variablefeeslines->setFeesheet($feesheet);
                 $em->persist($variablefeeslines);
