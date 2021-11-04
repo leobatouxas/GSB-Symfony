@@ -99,6 +99,7 @@ class FeesheetController extends AbstractController
     #[Route('/feesheet/{id<[0-9]+>}', name: 'app_feesheet_show')]
     public function show(FeeSheet $feesheet, Request $request, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('FEESHEET_MANAGE', $feesheet);
         $form = $this->createForm(FeesheetType::class, $feesheet, [
             'label'=> false
             ]);
