@@ -26,11 +26,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use function PHPUnit\Framework\isNull;
 
-class FeesheetController extends AbstractController
+class VisitorController extends AbstractController
 {
-    #[Route('/feesheet', name: 'app_feesheet')]
+    #[Route('/visitor/feesheet', name: 'app_visitor_feesheet')]
     public function index(FeeSheetRepository $feeSheetRepository, Request $request, EntityManagerInterface $em, StateRepository $stateRepository, StandardFeesRepository $StandardFeesRepository): Response
     {
         //récupération de toutes les fiches frais
@@ -84,19 +83,19 @@ class FeesheetController extends AbstractController
                 }
                 
 
-                return $this->redirectToRoute('app_feesheet_show',['id' => $feesheet->getId()]);
+                return $this->redirectToRoute('app_visitor_feesheet_show',['id' => $feesheet->getId()]);
                 
             }
             else {
-                return $this->redirectToRoute('app_feesheet');
+                return $this->redirectToRoute('app_visitor_feesheet');
             }
             
         }
 
-        return $this->render('feesheet/index.html.twig', ['feesheets' => $feesheets, 'form' => $form->createView()]);
+        return $this->render('visitor/feesheet/index.html.twig', ['feesheets' => $feesheets, 'form' => $form->createView()]);
     }
 
-    #[Route('/feesheet/{id<[0-9]+>}', name: 'app_feesheet_show')]
+    #[Route('/visitor/feesheet/{id<[0-9]+>}', name: 'app_visitor_feesheet_show')]
     public function show(FeeSheet $feesheet, Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('FEESHEET_MANAGE', $feesheet);
@@ -113,10 +112,10 @@ class FeesheetController extends AbstractController
             }   
                 $em->persist($feesheet);
                 $em->flush();
-            return $this->redirectToRoute('app_feesheet_show', ['id' => $feesheet->getId()]);
+            return $this->redirectToRoute('app_visitor_feesheet_show', ['id' => $feesheet->getId()]);
         }
 
-        return $this->render('feesheet/show.html.twig', [
+        return $this->render('visitor/feesheet/show.html.twig', [
             'form' => $form->createView(),
             'feesheet' => $feesheet
         ]);

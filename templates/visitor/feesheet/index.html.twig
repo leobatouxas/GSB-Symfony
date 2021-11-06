@@ -36,7 +36,7 @@
       <td>{{ feesheet.date|date("M") ~ ' '  ~ feesheet.date|date("Y")}}</td>
       <td>{{ feesheet.validAmount }}</td>
       <td>{{ feesheet.state.name }}</td>
-      <td><a href="{{path('app_feesheet_show',{'id': feesheet.id})}}">Voir plus</a></td>
+      <td><a href="{{path('app_visitor_feesheet_show',{'id': feesheet.id})}}">Voir plus</a></td>
     </tr>
     {% endfor %}
     
