@@ -15,8 +15,6 @@ class HomeController extends AbstractController
         {
             return $this->redirectToRoute('app_login');
         }
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
+        return $this->render('home/index.html.twig');
     }
 }
