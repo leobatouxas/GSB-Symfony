@@ -55,14 +55,16 @@
 
 
 <h2>Autres Frais</h2>
+{% if feesheet.state.id == 1 %}
 <button type="button" id="add-variablefees" class="btn btn-primary" data-collection-holder-class="tags">Ajouter</button>
+{% endif %}
 <table class="table table-striped">
   <thead>
     <tr>
       <th scope="col">Date</th>
       <th scope="col">Libellé</th>
       <th scope="col">Montant </th>
-      <th scope="col">Action</th>
+      {% if feesheet.state.id == 1 %}<th scope="col">Action</th>{% endif %}
     </tr>
   </thead>
   <tbody id="variablefees" data-prototype="{{form_widget(form.variablefeeslines.vars.prototype)|e('html_attr') }}" data-index="{{ form.variablefeeslines|length > 0 ? form.variablefeeslines|last.vars.name + 1 : 0 }}" >
@@ -103,7 +105,7 @@
   </script>
 {% endblock %}
 
-{% block _feesheet_variablefeeslines_widget  %}
+{% block _feesheet_variablefeeslines_widget  %} 
     {{ form_widget(form) }}
     <input type="hidden" id="widgets-counter" value="{{form.children|length}}">
 {% endblock %}
@@ -120,7 +122,11 @@
         <td>{{ form_widget(form.children.date) }}</td>
         <td>{{ form_widget(form.children.name) }}</td>
         <td>{{ form_widget(form.children.amount) }}</td>
-        <td><button type="button" data-action="delete" data-target="#line_{{id}}" class="btn btn-danger">Supprimer</button></td>
+
+        {% if form.children.date.vars.value.month == "now"|date('m') or form.children.date.vars.value.month == "now"|date('m') - 1 %}
+        <td><button type="button" data-action="delete" data-target="#line_{{id}}" class="btn btn-danger">Supprimer</button></td> 
+        {% endif %}
+
       </tr>
         
 {% endblock %}
