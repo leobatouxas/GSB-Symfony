@@ -2,26 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Employee;
 use App\Entity\FeeSheet;
 use App\Entity\StandardFeesLine;
-use App\Entity\State;
-use App\Entity\VariableFeesLine;
 use App\Form\FeesheetType;
-use App\Form\VariableFeesLineType;
 use App\Repository\FeeSheetRepository;
-use App\Repository\StandardFeesLineRepository;
 use App\Repository\StandardFeesRepository;
 use App\Repository\StateRepository;
-use App\Repository\VariableFeesLineRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\ChoiceList\ChoiceList;
-use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -102,8 +91,10 @@ class VisitorController extends AbstractController
         $form = $this->createForm(FeesheetType::class, $feesheet, [
             'label'=> false
             ]);
-
+        
         $form->handleRequest($request);
+
+        // On verifie si le formulaire à était submit, valide et que l'état de la fiche de frais est équivalent à 1 (crée).
         if ($form->isSubmitted() && $form->isValid() && $feesheet->getState()->getId() === 1) {
             foreach($feesheet->getVariableFeesLines() as $variablefeeslines){
                 $variablefeeslines->setFeesheet($feesheet);
