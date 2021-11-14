@@ -123,9 +123,7 @@
         <td>{{ form_widget(form.children.name) }}</td>
         <td>{{ form_widget(form.children.amount) }}</td>
 
-        {% if form.children.date.vars.value.month == "now"|date('m') or form.children.date.vars.value.month == "now"|date('m') - 1 %}
         <td><button type="button" data-action="delete" data-target="#line_{{id}}" class="btn btn-danger">Supprimer</button></td> 
-        {% endif %}
 
       </tr>
         
