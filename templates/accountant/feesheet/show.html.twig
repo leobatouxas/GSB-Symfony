@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% form_theme form _self %}
+
+{% block body %}
+<div class="text-center">
+    <h1>Fiche frais {{ feesheet.date|date("M") ~ ' '  ~ feesheet.date|date("Y") }}</h1>
+</div>
+{{ form_start(form) }}
+
+{% if feesheet.state.id == 2 %}
+<div class="row justify-content-end">
+    <div class="col-2">
+        <button type="submit" class="btn btn-success">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save-fill" viewBox="0 0 16 16">
+                <path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v7.793L4.854 6.646a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l3.5-3.5a.5.5 0 0 0-.708-.708L8.5 9.293V1.5z"/>
+            </svg>
+            Valider la fiche frais
+        </button>
+    </div>
+</div>
+{% endif %}
+
+
+{{ form_label(form.nbDocuments, 'Document justificatif') }}
+{{ form_widget(form.nbDocuments) }}
+
+
+<div>
+<h2>Frais Forfaitaire</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Frais Forfaitaire</th>
+      <th scope="col">Quantité</th>
+      <th scope="col">Montant unitaire</th>
+      <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    {% for standardfeesline in form.standardfeeslines %}
+    <tr>
+        <td>{{ standardfeesline.standardFees.name.vars.value }}</td>
+        <td>{{ form_row(standardfeesline.quantity) }}</td>
+        <td>{{ standardfeesline.standardFees.unitAmount.vars.value }}</td>
+        <td>{{ standardfeesline.quantity.vars.value * standardfeesline.standardFees.unitAmount.vars.value }}</td>
+    </tr>
+        {{ form_row(standardfeesline.standardFees) }}
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<h2>Autres Frais</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Libellé</th>
+      <th scope="col">Montant </th>
+      {% if feesheet.state.id == 1 %}<th scope="col">Action</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody id="variablefees" data-prototype="{{form_widget(form.variablefeeslines.vars.prototype)|e('html_attr') }}" data-index="{{ form.variablefeeslines|length > 0 ? form.variablefeeslines|last.vars.name + 1 : 0 }}" >
+
+      {{ form_row(form.variablefeeslines) }}
+    
+      
+    
+  </tbody>
+</table>
+    {{ form_end(form) }}
+</div>
+
+<script>
+    $('#add-variablefees').click(function(){
+        const index = +$('#widgets-counter').val();
+
+        console.log(index)
+
+        const tmpl = $('#variablefees').data('prototype').replace(/__name__/g, index);
+        //console.log(tmpl)
+        $('#variablefees').append(tmpl);
+
+        $('#widgets-counter').val(index + 1);
+
+        handleDeleteButtons();
+        
+    });
+
+    function handleDeleteButtons() {
+      $('button[data-action="delete"]').click(function(){
+        const target = this.dataset.target;
+        $(target).remove();
+      });
+    }
+
+    handleDeleteButtons();
+  </script>
+{% endblock %}
+
+{% block _feesheet_variablefeeslines_widget  %} 
+    {{ form_widget(form) }}
+    <input type="hidden" id="widgets-counter" value="{{form.children|length}}">
+{% endblock %}
+
+
+{% block _feesheet_variablefeeslines_entry_row %}
+     {{ form_widget(form) }}
+        
+{% endblock %}
+
+
+{% block _feesheet_variablefeeslines_entry_widget %}
+      <tr id="line_{{id}}">
+        <td>{{ form_widget(form.children.date) }}</td>
+        <td>{{ form_widget(form.children.name) }}</td>
+        <td>{{ form_widget(form.children.amount) }}</td>
+
+        <td><button type="button" data-action="delete" data-target="#line_{{id}}" class="btn btn-danger">Supprimer</button></td> 
+
+      </tr>
+        
+{% endblock %}
