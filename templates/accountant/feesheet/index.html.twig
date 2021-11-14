@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+
+<table class="table">
+  <thead>
+    <tr>
+        <th scope="col">Employé</th>
+        <th scope="col">Date</th>
+        <th scope="col">Montant Valide</th>
+        <th scope="col">Etat</th>
+        <th scope="col">Affichage</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for feesheet in feesheetsCreates %}
+    <tr>
+        <td>{{ feesheet.employee.firstname ~ ' ' ~ feesheet.employee.lastname }}</td>
+        <td>{{ feesheet.date|date("M") ~ ' '  ~ feesheet.date|date("Y")}}</td>
+        <td>{{ feesheet.validAmount }}</td>
+        <td>{{ feesheet.state.name }}</td>
+        <td><a href="{{path('app_accountant_feesheet_show',{'id': feesheet.id})}}">Voir plus</a></td>
+    </tr>
+    {% endfor %}
+    
+    
+  </tbody>
+</table>
+{% endblock %}

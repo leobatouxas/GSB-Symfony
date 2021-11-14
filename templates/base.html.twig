@@ -37,7 +37,18 @@
                 </li>
                 {% if 'ROLE_VISITOR' in  app.user.roles %}
                     <li>
-                    <a href="{{ path('app_visitor_feesheet') }}" class="nav-link text-white <?php if($etat == 'fichefraismois'){ echo 'active'; }  ?>">
+                    <a href="{{ path('app_visitor_feesheet') }}" class="nav-link text-white ">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#table" />
+                        </svg>
+                        Fiche Frais
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if 'ROLE_ACCOUNTANT' in  app.user.roles %}
+                    <li>
+                    <a href="{{ path('app_accountant_feesheet') }}" class="nav-link text-white">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#table" />
                         </svg>
