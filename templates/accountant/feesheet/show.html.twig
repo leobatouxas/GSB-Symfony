@@ -109,11 +109,11 @@
 
         $('#widgets-counter').val(index + 1);
 
-        handleDeleteButtons();
+        handleRefuseButtons();
         
     });
 
-    function handleDeleteButtons() {
+    function handleRefuseButtons() {
       $('button[data-action="refuse"]').click(function(){
         const target = this.dataset.target;
         let value = $(target)[0].children[1].children[0].value;
@@ -124,7 +124,7 @@
       });
     }
 
-    handleDeleteButtons();
+    handleRefuseButtons();
   </script>
 {% endblock %}
 
