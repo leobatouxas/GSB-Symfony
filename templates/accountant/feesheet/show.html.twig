@@ -61,13 +61,12 @@
       <th scope="col">Date</th>
       <th scope="col">Libellé</th>
       <th scope="col">Montant </th>
-      {% if feesheet.state.id == 1 %}<th scope="col">Action</th>{% endif %}
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody id="variablefees" data-prototype="{{form_widget(form.variablefeeslines.vars.prototype)|e('html_attr') }}" data-index="{{ form.variablefeeslines|length > 0 ? form.variablefeeslines|last.vars.name + 1 : 0 }}" >
 
       {{ form_row(form.variablefeeslines) }}
-    
       
     
   </tbody>
@@ -92,9 +91,11 @@
     });
 
     function handleDeleteButtons() {
-      $('button[data-action="delete"]').click(function(){
+      $('button[data-action="refuse"]').click(function(){
         const target = this.dataset.target;
-        $(target).remove();
+        let value = $(target)[0].children[1].children[0].value;
+        value = 'REFUSE : ' + value;
+        $(target)[0].children[1].children[0].value = value;
       });
     }
 
@@ -110,17 +111,16 @@
 
 {% block _feesheet_variablefeeslines_entry_row %}
      {{ form_widget(form) }}
-        
 {% endblock %}
 
 
 {% block _feesheet_variablefeeslines_entry_widget %}
       <tr id="line_{{id}}">
-        <td>{{ form_widget(form.children.date) }}</td>
-        <td>{{ form_widget(form.children.name) }}</td>
+        <td>{{ form_widget(form.children.date)}}</td>
+        <td>{{ form_widget(form.children.name, {'attr': {'class': 'name'}}) }}</td>
         <td>{{ form_widget(form.children.amount) }}</td>
 
-        <td><button type="button" data-action="delete" data-target="#line_{{id}}" class="btn btn-danger">Supprimer</button></td> 
+        <td><button type="button" data-action="refuse" data-target="#line_{{id}}" class="btn btn-danger">Refuser</button></td> 
 
       </tr>
         

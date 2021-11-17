@@ -15,7 +15,7 @@ class VariableFeesLineType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date',DateType::class,['label' => false, 'years' => range(Date('Y'), date('Y')), 'months' => range(Date('m') - 1, date('m'))])
+            ->add('date',DateType::class,['label' => false, 'years' => range(Date('Y')-1, date('Y')), 'months' => range(Date('m') - 11, date('m'))])
             ->add('name',TextType::class,['label' => false])
             ->add('amount',NumberType::class,['label' => false])
         ;
