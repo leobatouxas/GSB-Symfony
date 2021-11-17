@@ -14,6 +14,7 @@ class FeesheetType extends AbstractType
     {
         $builder
             ->add('nbDocuments')
+            ->add('validAmount')
             ->add('standardfeeslines', CollectionType::class, [
             'entry_type' => StandardFeesLineType::class,
             'by_reference' => false,

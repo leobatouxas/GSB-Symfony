@@ -61,16 +61,8 @@ class AccountantController extends AbstractController
 
             // On verifie si le formulaire à était submit, valide et que l'état de la fiche de frais est équivalent à 2 (cloturée).
             if ($form->isSubmitted() && $form->isValid() && $feesheet->getState()->getId() === 2) {
-                
-                //Calcul montant Valide
-                $ValidAmount = 0;
-                foreach($feesheet->getStandardFeesLines() as $standardfeesline) {
-                    $ValidAmount = $ValidAmount + $standardfeesline->getQuantity() * $standardfeesline->getStandardFees()->getUnitAmount();
-                }
-
                 foreach($feesheet->getVariableFeesLines() as $variablefeesline){
                     //Calcul montant Valide
-                    $ValidAmount = $ValidAmount + $variablefeesline->getAmount();
 
                     $variablefeesline->setFeesheet($feesheet);
                     $em->persist($variablefeesline);
@@ -78,7 +70,6 @@ class AccountantController extends AbstractController
                 }   
                     $StateValid = $stateRepository->find(3);
                     $feesheet->setState($StateValid);
-                    $feesheet->setValidAmount($ValidAmount);
                     $em->persist($feesheet);
                     $em->flush();
                 return $this->redirectToRoute('app_accountant_feesheet_show', ['id' => $feesheet->getId()]);
