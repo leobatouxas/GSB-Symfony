@@ -117,8 +117,10 @@
       $('button[data-action="refuse"]').click(function(){
         const target = this.dataset.target;
         let value = $(target)[0].children[1].children[0].value;
-        value = 'REFUSE : ' + value;
-        $(target)[0].children[1].children[0].value = value;
+        if(value.substr(0,6) != 'REFUSE') {
+          value = 'REFUSE : ' + value;
+          $(target)[0].children[1].children[0].value = value;
+        }
       });
     }
 
