@@ -75,6 +75,14 @@ class AccountantController extends AbstractController
                 return $this->redirectToRoute('app_accountant_feesheet_show', ['id' => $feesheet->getId()]);
             }
 
+            if ($form->isSubmitted() && $form->isValid() && $feesheet->getState()->getId() === 3) {
+                    $StatePayment = $stateRepository->find(4);
+                    $feesheet->setState($StatePayment);
+                    $em->persist($feesheet);
+                    $em->flush();
+                return $this->redirectToRoute('app_accountant_feesheet_show', ['id' => $feesheet->getId()]);
+            }
+
 
         return $this->render('accountant/feesheet/show.html.twig', [
             'form' => $form->createView(),

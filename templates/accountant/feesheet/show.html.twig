@@ -14,7 +14,7 @@
 <div class="d-flex bd-highlight mb-3">
   <div class="me-auto p-2 bd-highlight">
       {{ form_label(form.nbDocuments, 'Document justificatif') }}
-      {{ form_widget(form.nbDocuments) }}
+      {% if (feesheet.state.id == 1) or (feesheet.state.id == 2) %}{{ form_widget(form.nbDocuments) }}{% else %} {{ form_widget(form.nbDocuments,{ 'attr': {'readonly': true}}) }} {% endif %}
   </div>
   <div class="p-2 bd-highlight">
       {{ form_label(form.validAmount, 'Montant Valide') }}
@@ -30,6 +30,18 @@
     </button>
   </div>
   {% endif %}
+
+  {% if feesheet.state.id == 3 %}
+  <div class="p-2 bd-highlight">
+    <button type="submit" class="btn btn-success">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save-fill" viewBox="0 0 16 16">
+        <path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v7.793L4.854 6.646a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l3.5-3.5a.5.5 0 0 0-.708-.708L8.5 9.293V1.5z"/>
+      </svg>
+      Mettre en paiement la fiche frais
+    </button>
+  </div>
+  {% endif %}
+
 </div>
 
 
@@ -50,7 +62,7 @@
     {% for standardfeesline in form.standardfeeslines %}
     <tr>
         <td>{{ standardfeesline.standardFees.name.vars.value }}</td>
-        <td>{{ form_row(standardfeesline.quantity) }}</td>
+        <td>{% if (feesheet.state.id == 1) or (feesheet.state.id == 2) %}{{ form_row(standardfeesline.quantity) }}{% else %} {{ form_row(standardfeesline.quantity, { 'attr': {'readonly': true} }) }} {% endif %}</td>
         <td>{{ standardfeesline.standardFees.unitAmount.vars.value }}</td>
         <td>{{ standardfeesline.quantity.vars.value * standardfeesline.standardFees.unitAmount.vars.value }}</td>
     </tr>
