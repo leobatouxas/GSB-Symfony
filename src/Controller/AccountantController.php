@@ -81,4 +81,20 @@ class AccountantController extends AbstractController
             'feesheet' => $feesheet
         ]);
     }
+
+    #[Route('/accountant/feesheet/follow-payment', name: 'app_accountant_feesheet_follow-payment')]
+    public function all(EntityManagerInterface $em, FeeSheetRepository $feeSheetRepository, StateRepository $stateRepository, Request $request): Response
+    {
+         
+        //Récupération des fiche de frais aevc l'état cloturée
+        $stateValid = $stateRepository->find(3);
+        $stateapayment = $stateRepository->find(4);
+        $states34 = [$stateValid, $stateapayment];
+        $feesheets = $feeSheetRepository->findBy(['state' => $states34]);
+
+        return $this->render('accountant/feesheet/follow-payment.html.twig', [
+            'feesheets' => $feesheets
+        ]);
+    }
+
 }
