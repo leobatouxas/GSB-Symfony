@@ -92,6 +92,7 @@ class VisitorController extends AbstractController
             $form = $this->createForm(FeesheetType::class, $feesheet, [
                 'label'=> false
             ]);
+            $form->remove('validAmount');
         }
         else {
             $form = $this->createForm(FeesheetType::class, $feesheet, [
