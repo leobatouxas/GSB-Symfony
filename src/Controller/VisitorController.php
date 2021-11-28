@@ -88,10 +88,21 @@ class VisitorController extends AbstractController
     public function show(FeeSheet $feesheet, Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('FEESHEET_MANAGE', $feesheet);
-        $form = $this->createForm(FeesheetType::class, $feesheet, [
-            'label'=> false
+        if($feesheet->getState()->getId() === 1) {
+            $form = $this->createForm(FeesheetType::class, $feesheet, [
+                'label'=> false
             ]);
-        
+        }
+        else {
+            $form = $this->createForm(FeesheetType::class, $feesheet, [
+                'label'=> false
+            ]);
+            $form->remove('nbDocuments');
+            $form->remove('validAmount');
+            $form->remove('variablefeeslines');
+            $form->remove('standardfeeslines');
+        }
+
         $form->handleRequest($request);
 
         // On verifie si le formulaire à était submit, valide et que l'état de la fiche de frais est équivalent à 1 (crée).
@@ -106,9 +117,17 @@ class VisitorController extends AbstractController
             return $this->redirectToRoute('app_visitor_feesheet_show', ['id' => $feesheet->getId()]);
         }
 
-        return $this->render('visitor/feesheet/show.html.twig', [
-            'form' => $form->createView(),
-            'feesheet' => $feesheet
-        ]);
+        if($feesheet->getState()->getId() === 1) {
+            return $this->render('visitor/feesheet/showEdit.html.twig', [
+                'form' => $form->createView(),
+                'feesheet' => $feesheet
+            ]);
+        }
+        else {
+            return $this->render('visitor/feesheet/showView.html.twig', [
+                'form' => $form->createView(),
+                'feesheet' => $feesheet
+            ]);
+        }
     }
 }

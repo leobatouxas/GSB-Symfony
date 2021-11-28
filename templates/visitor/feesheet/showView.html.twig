@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FeesheetController!{% endblock %}
+
+{% form_theme form _self %}
+
+{% block body %}
+<div class="text-center">
+    <h1>Fiche frais {{ feesheet.date|date("M") ~ ' '  ~ feesheet.date|date("Y") }}</h1>
+    <h2>Status : {{ feesheet.state.name }}</h2>
+</div>
+{{ form_start(form) }}
+
+<div class="d-flex bd-highlight mb-3">
+   <div class="me-auto p-2 bd-highlight">
+      <p>Document justificatif : {{ feesheet.nbDocuments }}</p>
+  </div>
+  {% if feesheet.state.id != 2 %}
+  <div class="p-2 bd-highlight">
+      <p>Montant Valide : {{ feesheet.validAmount }}</p>
+  </div>
+  {% endif %}
+</div>
+
+
+<div>
+<h2>Frais Forfaitaire</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Frais Forfaitaire</th>
+      <th scope="col">Quantité</th>
+      <th scope="col">Montant unitaire</th>
+      <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    {% for standardfeesline in feesheet.standardFeesLines %}
+    <tr>
+        <td>{{ standardfeesline.standardFees.name }}</td>
+				<td>{{ standardfeesline.quantity }}</td>
+				<td>{{ standardfeesline.standardFees.unitAmount }}</td>
+				<td>{{ standardfeesline.quantity * standardfeesline.standardFees.unitAmount}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<h2>Autres Frais</h2>
+{% if feesheet.state.id == 1 %}
+<button type="button" id="add-variablefees" class="btn btn-primary" data-collection-holder-class="tags">Ajouter</button>
+{% endif %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Libellé</th>
+      <th scope="col">Montant </th>
+      {% if feesheet.state.id == 1 %}<th scope="col">Action</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody id="variablefees">
+      {% for variableFeesLine in feesheet.variableFeesLines %}
+					<tr>
+						<td>{{ variableFeesLine.date|date("Y/m/d") }}</td>
+						<td>
+							{{ variableFeesLine.name }}
+						</td>
+						<td>
+							{{ variableFeesLine.amount }}
+						</td>
+					</tr>
+				{% endfor %}
+  </tbody>
+</table>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+
