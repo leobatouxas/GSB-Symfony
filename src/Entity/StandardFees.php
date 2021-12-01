@@ -56,12 +56,12 @@ class StandardFees
         return $this;
     }
 
-    public function getUnitAmount(): ?int
+    public function getUnitAmount(): ?float
     {
         return $this->unitAmount;
     }
 
-    public function setUnitAmount(int $unitAmount): self
+    public function setUnitAmount(float $unitAmount): self
     {
         $this->unitAmount = $unitAmount;
 

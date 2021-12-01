@@ -89,12 +89,12 @@ class FeeSheet
         return $this;
     }
 
-    public function getValidAmount(): ?int
+    public function getValidAmount(): ?float
     {
         return $this->validAmount;
     }
 
-    public function setValidAmount(int $validAmount): self
+    public function setValidAmount(float $validAmount): self
     {
         $this->validAmount = $validAmount;
 
