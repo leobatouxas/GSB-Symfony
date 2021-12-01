@@ -47,6 +47,7 @@ class AccountantController extends AbstractController
                 $em->persist($feesheet);
                 $em->flush();
             }
+            return $this->redirectToRoute('app_accountant_feesheet');
         }
 
         return $this->render('accountant/feesheet/index.html.twig', [
