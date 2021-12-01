@@ -30,7 +30,7 @@ class FeeSheet
     private $nbDocuments;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $validAmount;
 
