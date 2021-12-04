@@ -1,15 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}GSB - Accueil{% endblock %}
+{% block title %}GSB - Accueil
+{% endblock %}
 
 {% block body %}
-    <h1>Bienvenue  {{ app.user.firstname }} {{ app.user.lastname }}</h1>
 
-    {% if 'ROLE_ACCOUNTANT' in  app.user.roles %}
-        <h2>Vous êtes Comptable</h2>
-    {% endif %}
-    {% if 'ROLE_VISITOR' in  app.user.roles %}
-        <h2>Vous êtes Visiteur</h2>
-    {% endif %}
+		<div class="row  justify-content-center align-items-center"  style="height: 80vh;">
+			<div class="col-6">
+                <div>
+                    <h1>Bienvenue
+                            {{ app.user.firstname }}
+                            {{ app.user.lastname }}</h1>
+                        {% if 'ROLE_ACCOUNTANT' in  app.user.roles %}
+                            <h2>Vous êtes Comptable</h2>
+                        {% endif %}
+                        {% if 'ROLE_VISITOR' in  app.user.roles %}
+                            <h2>Vous êtes Visiteur</h2>
+                        {% endif %}
+                </div>
+			</div>
+		</div>
+
 
 {% endblock %}
