@@ -88,18 +88,33 @@ class AccountantController extends AbstractController
 
             // On verifie si le formulaire à était submit, valide et que l'état de la fiche de frais est équivalent à 2 (cloturée).
             if ($form->isSubmitted() && $form->isValid() && $feesheet->getState()->getId() === 2) {
+                $dateActuelle = (new \DateTime())->format('Y-m-d');
+                $date1years = date('Y-m-d', strtotime($dateActuelle. ' - 1 years'));
+                $erreur = 0;
                 //Traitement des valeurs pour les frais variable
                 foreach($feesheet->getVariableFeesLines() as $variablefeesline){
-                    $variablefeesline->setFeesheet($feesheet);
-                    $em->persist($variablefeesline);
-                    $em->remove($variablefeesline);
-                }   
-                // Passage de la fiche frais à l'état 'Validée'
-                $StateValid = $stateRepository->find(3);
-                $feesheet->setState($StateValid);
+                    $date = $variablefeesline->getDate()->format('Y-m-d');
+                    if (($date >= $date1years) && ($date <= $dateActuelle)){
+                        $variablefeesline->setFeesheet($feesheet);
+                        $em->persist($variablefeesline);
+                        $em->remove($variablefeesline);
+                    }else{
+                        $erreur = 1;
 
-                $em->persist($feesheet);
-                $em->flush();
+                    //ERROR
+                    }
+
+                }   
+                if($erreur === 0 )
+                {
+                    // Passage de la fiche frais à l'état 'Validée'
+                    $StateValid = $stateRepository->find(3);
+                    $feesheet->setState($StateValid);
+
+                    $em->persist($feesheet);
+                    $em->flush();
+                }
+                
 
                 //redirection vers la page de détail du fiche frais
                 return $this->redirectToRoute('app_accountant_feesheet_show', ['id' => $feesheet->getId()]);

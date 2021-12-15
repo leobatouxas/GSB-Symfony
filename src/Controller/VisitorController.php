@@ -108,13 +108,28 @@ class VisitorController extends AbstractController
 
         // On verifie si le formulaire à était submit, valide et que l'état de la fiche de frais est équivalent à 1 (crée).
         if ($form->isSubmitted() && $form->isValid() && $feesheet->getState()->getId() === 1) {
+            $dateActuelle = (new \DateTime())->format('Y-m-d');
+            $date1years = date('Y-m-d', strtotime($dateActuelle. ' - 1 years'));
+            $erreur = 0;
             foreach($feesheet->getVariableFeesLines() as $variablefeeslines){
-                $variablefeeslines->setFeesheet($feesheet);
-                $em->persist($variablefeeslines);
-                $em->remove($variablefeeslines);
+
+                //Vérification côté serveur si la date est entre la date actuelle et 1 ans avant
+                $date = $variablefeeslines->getDate()->format('Y-m-d');
+                if (($date >= $date1years) && ($date <= $dateActuelle)){
+                    $variablefeeslines->setFeesheet($feesheet);
+                    $em->persist($variablefeeslines);
+                    $em->remove($variablefeeslines);
+                }else{
+                    $erreur = 1;
+                   //ERROR
+                }
+                
             }   
-                $em->persist($feesheet);
-                $em->flush();
+                if($erreur === 0) {
+                    $em->persist($feesheet);
+                    $em->flush();
+                }
+                
             return $this->redirectToRoute('app_visitor_feesheet_show', ['id' => $feesheet->getId()]);
         }
 
