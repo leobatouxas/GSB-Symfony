@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\VariableFeesLine;
+use DateTime;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -14,8 +15,10 @@ class VariableFeesLineType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $dateActuelle = (new \DateTime())->format('Y-m-d');
+        $date1years = date('Y-m-d', strtotime($dateActuelle. ' - 1 years'));
         $builder
-            ->add('date',DateType::class,['label' => false, 'years' => range(Date('Y')-1, date('Y')), 'months' => range(Date('m') - 11, date('m'))])
+            ->add('date',DateType::class,['label' => false, 'attr' => ['min' => ($date1years), 'max' => $dateActuelle] ,'widget' => 'single_text'])
             ->add('name',TextType::class,['label' => false])
             ->add('amount',NumberType::class,['label' => false])
         ;
