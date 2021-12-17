@@ -21,12 +21,13 @@ class VisitorController extends AbstractController
     #[Route('/visitor/feesheet', name: 'app_visitor_feesheet')]
     public function index(FeeSheetRepository $feeSheetRepository, Request $request, EntityManagerInterface $em, StateRepository $stateRepository, StandardFeesRepository $StandardFeesRepository): Response
     {
+        
         //récupération de toutes les fiches frais
         $feesheets = $feeSheetRepository->findBy(['employee' => $this->getUser()]);
 
         $feesheet = new FeeSheet;
         $form = $this->createFormBuilder($feesheet)
-                    ->add('date',DateType::class, ['days' => range(1,1), 'years' => range(Date('Y'), date('Y')), 'months' => range(Date('m') - 1, date('m'))])
+                    ->add('date',DateType::class, ['days' => range(1,1), 'years' => range(date('Y',strtotime('-1 months')), date('Y',strtotime('+1 months')))])
                     ->getForm()
         ;
 
@@ -38,48 +39,70 @@ class VisitorController extends AbstractController
             // Verification si il existe déjà une fiche frais avec cette utilisateur et la même date
             if($feeSheetRepository->findOneBy(['date' => $form->getData()->getDate(),'employee' => $this->getUser()]) == null)
             {
-                $feesheet->setNbDocuments(0);
-                $feesheet->setValidAmount(0);
-                $state = $stateRepository->findOneBy(['id' => 1]);
-                $feesheet->setState($state); 
-                $feesheet->setEmployee($this->getUser());
-                $em->persist($feesheet);
-                $em->flush();
-                $AllstandardFees = $StandardFeesRepository->findAll();
+                //Récupération de la date actuelle
+                $dateActu = new \DateTime();
+                $dateActuelle = $dateActu->format('Y-m-d');
+                
+                $datedebut = date('Y-m-01', strtotime($dateActuelle. ' - 1 months'));  
+                $dateFin = date('Y-m-01', strtotime($dateActuelle));
 
-                for($i = 0;$i<count($AllstandardFees);$i++)
-                {
-                    $standardfeesline = new standardfeesline();
-                    $standardfeesline->setFeeSheet($feesheet);
-                    $standardfeesline->setStandardFees($AllstandardFees[$i]);
-                    $standardfeesline->setQuantity(0);
-                    $em->persist($standardfeesline);
+                // Récupération date du fomulaire et formatage de la date pour pouvoir
+                // la comparer à la date de début et de fin
+                $dateForm = $form->getData()->getDate();
+                $dateForm = $dateForm->format('Y-m-d');
+
+                // Si la date du formulaire est entre le mois d'avant 
+                // et le mois actuelle on crée la fiche frais
+                if($dateForm >= $datedebut && $dateForm <= $dateFin) {
+                    $feesheet->setNbDocuments(0);
+                    $feesheet->setValidAmount(0);
+                    $state = $stateRepository->findOneBy(['id' => 1]);
+                    $feesheet->setState($state); 
+                    $feesheet->setEmployee($this->getUser());
+                    $em->persist($feesheet);
                     $em->flush();
-                }
+                    $AllstandardFees = $StandardFeesRepository->findAll();
 
-
-                $feesheetPrevMonth = $feeSheetRepository->findOneBy(['date' => $form->getData()->getDate()->modify('-1 month'), 'employee' => $this->getUser()]);
-
-                if($feesheetPrevMonth != null)
-                {
-                    if($feesheetPrevMonth->getState()->getId() === 1)
+                    // Création des frais forfaitaire automatique
+                    for($i = 0;$i<count($AllstandardFees);$i++)
                     {
-                        $state2 = $stateRepository->findOneBy(['id' => 2]);
-                        $feesheetPrevMonth->setState($state2);
-                        $em->persist($feesheetPrevMonth);
+                        $standardfeesline = new standardfeesline();
+                        $standardfeesline->setFeeSheet($feesheet);
+                        $standardfeesline->setStandardFees($AllstandardFees[$i]);
+                        $standardfeesline->setQuantity(0);
+                        $em->persist($standardfeesline);
                         $em->flush();
                     }
-                }
-                
 
-                return $this->redirectToRoute('app_visitor_feesheet_show',['id' => $feesheet->getId()]);
+
+                    // Traitement : Cloturation de la fiche frais du mois précédent
+
+                    // On récupere la fiche frais du mois d'avant de c'elle crée
+                    $feesheetPrevMonth = $feeSheetRepository->findOneBy(['date' => $form->getData()->getDate()->modify('-1 month'), 'employee' => $this->getUser()]);
+                    
+                    // S'il existe une fiche frais du mois d'avant et que l'état est 'Crée'
+                    // on définis l'état de la fiche frais à cloturée
+                    // et on la persiste en base de données
+                    if($feesheetPrevMonth != null)
+                    {
+                        if($feesheetPrevMonth->getState()->getId() === 1)
+                        {
+                            $state2 = $stateRepository->findOneBy(['id' => 2]);
+                            $feesheetPrevMonth->setState($state2);
+                            $em->persist($feesheetPrevMonth);
+                            $em->flush();
+                        }
+                    }
+                    return $this->redirectToRoute('app_visitor_feesheet_show',['id' => $feesheet->getId()]);
+                }
+                else {
+                    return $this->redirectToRoute('app_visitor_feesheet');
+                }             
+            }  
                 
-            }
-            else {
-                return $this->redirectToRoute('app_visitor_feesheet');
-            }
-            
         }
+        
+        
 
         return $this->render('visitor/feesheet/index.html.twig', ['feesheets' => $feesheets, 'form' => $form->createView()]);
     }
