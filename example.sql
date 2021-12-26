@@ -1,11 +1,11 @@
-INSERT INTO `employee` (`id`, `employee_type_id`, `username`, `roles`, `password`, `firstname`, `lastname`, `city`, `postalcode`) VALUES
-	(1, 1, 'JohnDoe', '["ROLE_VISITOR"]', '$2y$13$gf76uI.eSomJAEvYbSFkB.H3YIDfQQhGSWdBSA7AjDjnzxUnRil6u', 'John', 'Doe', 'Aubusson', '23200'),
-	(2, 2, 'JaneDoe', '["ROLE_ACCOUNTANT"]', '$2y$13$gf76uI.eSomJAEvYbSFkB.H3YIDfQQhGSWdBSA7AjDjnzxUnRil6u', 'Jane', 'Doe', 'Aubusson', '23200');
-
 INSERT INTO `employee_type` (`id`, `name`) VALUES
 	(1, 'Visiteur'),
 	(2, 'Comptable');
 
+INSERT INTO `employee` (`id`, `employee_type_id`, `username`, `roles`, `password`, `firstname`, `lastname`, `city`, `postalcode`) VALUES
+	(1, 1, 'JohnDoe', '["ROLE_VISITOR"]', '$2y$13$gf76uI.eSomJAEvYbSFkB.H3YIDfQQhGSWdBSA7AjDjnzxUnRil6u', 'John', 'Doe', 'Aubusson', '23200'),
+	(2, 2, 'JaneDoe', '["ROLE_ACCOUNTANT"]', '$2y$13$gf76uI.eSomJAEvYbSFkB.H3YIDfQQhGSWdBSA7AjDjnzxUnRil6u', 'Jane', 'Doe', 'Aubusson', '23200');
+	
 INSERT INTO `standard_fees` (`id`, `name`, `unit_amount`) VALUES
 	(1, 'Nuitée', 80),
 	(2, 'Repas Midi', 29),
