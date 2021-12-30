@@ -17,6 +17,9 @@
                         {% if 'ROLE_VISITOR' in  app.user.roles %}
                             <h2>Vous êtes Visiteur</h2>
                         {% endif %}
+                        {% if 'ROLE_ADMIN' in  app.user.roles %}
+                            <h2>Vous êtes Admin</h2>
+                        {% endif %}
                 </div>
 			</div>
 		</div>
