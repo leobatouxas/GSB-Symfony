@@ -1,6 +1,6 @@
 INSERT INTO `employee_type` (`id`, `name`) VALUES
 	(1, 'Visiteur'),
-	(2, 'Comptable');
+	(2, 'Comptable'),
 	(3, 'Admin');
 
 INSERT INTO `employee` (`id`, `employee_type_id`, `username`, `roles`, `password`, `firstname`, `lastname`, `city`, `postalcode`) VALUES
@@ -22,7 +22,7 @@ INSERT INTO `state` (`id`, `name`) VALUES
 
 INSERT INTO `fee_sheet` (`id`, `state_id`, `employee_id`, `date`, `nb_documents`, `valid_amount`) VALUES
 	(1, 4, 1, '2021-10-01', 5, 218),
-	(2, 3, 1, '2021-11-01', 2, 651);
+	(2, 3, 1, '2021-11-01', 2, 651),
 	(3, 1, 1, '2021-12-01', 0, 0);
 
 INSERT INTO `standard_fees_line` (`id`, `standard_fees_id`, `fee_sheet_id`, `quantity`) VALUES
