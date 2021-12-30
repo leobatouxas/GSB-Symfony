@@ -101,8 +101,6 @@ class VisitorController extends AbstractController
             }  
                 
         }
-        
-        
 
         return $this->render('visitor/feesheet/index.html.twig', ['feesheets' => $feesheets, 'form' => $form->createView()]);
     }
@@ -132,10 +130,9 @@ class VisitorController extends AbstractController
         // On verifie si le formulaire à était submit, valide et que l'état de la fiche de frais est équivalent à 1 (crée).
         if ($form->isSubmitted() && $form->isValid() && $feesheet->getState()->getId() === 1) {
             $dateActuelle = (new \DateTime())->format('Y-m-d');
-            $date1years = date('Y-m-d', strtotime($dateActuelle. ' - 1 years'));
+            $date1years = date('Y-m-01', strtotime($dateActuelle. ' - 1 years'));
             $erreur = 0;
             foreach($feesheet->getVariableFeesLines() as $variablefeeslines){
-
                 //Vérification côté serveur si la date est entre la date actuelle et 1 ans avant
                 $date = $variablefeeslines->getDate()->format('Y-m-d');
                 if (($date >= $date1years) && ($date <= $dateActuelle)){
