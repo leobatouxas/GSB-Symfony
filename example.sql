@@ -1,10 +1,12 @@
 INSERT INTO `employee_type` (`id`, `name`) VALUES
 	(1, 'Visiteur'),
 	(2, 'Comptable');
+	(3, 'Admin');
 
 INSERT INTO `employee` (`id`, `employee_type_id`, `username`, `roles`, `password`, `firstname`, `lastname`, `city`, `postalcode`) VALUES
 	(1, 1, 'JohnDoe', '["ROLE_VISITOR"]', '$2y$13$gf76uI.eSomJAEvYbSFkB.H3YIDfQQhGSWdBSA7AjDjnzxUnRil6u', 'John', 'Doe', 'Aubusson', '23200'),
-	(2, 2, 'JaneDoe', '["ROLE_ACCOUNTANT"]', '$2y$13$gf76uI.eSomJAEvYbSFkB.H3YIDfQQhGSWdBSA7AjDjnzxUnRil6u', 'Jane', 'Doe', 'Aubusson', '23200');
+	(2, 2, 'JaneDoe', '["ROLE_ACCOUNTANT"]', '$2y$13$gf76uI.eSomJAEvYbSFkB.H3YIDfQQhGSWdBSA7AjDjnzxUnRil6u', 'Jane', 'Doe', 'Aubusson', '23200'),
+	(3, 3, 'Admin', '["ROLE_ADMIN"]', '$2y$13$gf76uI.eSomJAEvYbSFkB.H3YIDfQQhGSWdBSA7AjDjnzxUnRil6u', 'Admin', 'Admin', 'Aubusson', '23200');
 	
 INSERT INTO `standard_fees` (`id`, `name`, `unit_amount`) VALUES
 	(1, 'Nuitée', 80),
@@ -20,7 +22,8 @@ INSERT INTO `state` (`id`, `name`) VALUES
 
 INSERT INTO `fee_sheet` (`id`, `state_id`, `employee_id`, `date`, `nb_documents`, `valid_amount`) VALUES
 	(1, 4, 1, '2021-10-01', 5, 218),
-	(2, 1, 1, '2021-11-01', 2, 651);
+	(2, 3, 1, '2021-11-01', 2, 651);
+	(3, 1, 1, '2021-12-01', 0, 0);
 
 INSERT INTO `standard_fees_line` (`id`, `standard_fees_id`, `fee_sheet_id`, `quantity`) VALUES
 	(1, 1, 1, 1),
