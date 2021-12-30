@@ -77,6 +77,10 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
+    public function __toString()
+    {
+        return $this->getUserIdentifier();
+    }
     /**
      * @deprecated since Symfony 5.3, use getUserIdentifier instead
      */
